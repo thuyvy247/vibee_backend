@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: vibee
+  datasource:
+    url: jdbc:mysql://${DB_HOST:}:${DB_PORT:}/${DB_NAME:}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USER:}
+    password: ${DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate          # Flyway quản lý schema, Hibernate chỉ kiểm tra
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}         # BẮT BUỘC, base64 của >= 32 byte. Tạo: openssl rand -base64 32
+    access-ttl: 15m
+    refresh-ttl: 7d
+  cors:
+    allowed-origins: ${CORS_ORIGINS:}
+  admin:                          # tài khoản ADMIN đầu tiên, bỏ trống thì không tạo
+    email: ${ADMIN_EMAIL:}
+    password: ${ADMIN_PASSWORD:}
+  frontend-url: ${FRONTEND_URL:}
+  order:
+    hold-minutes: ${ORDER_HOLD_MINUTES:10}      # thời gian giữ chỗ chờ thanh toán
+    max-pending-per-user: 3                     # số đơn chưa thanh toán tối đa mỗi người
+    expire-scan-ms: ${ORDER_EXPIRE_SCAN_MS:30000}
+  payment:
+    mock-enabled: ${PAYMENT_MOCK_ENABLED:false} # true = cho phép giả lập thanh toán (chỉ để thử)
+  vnpay:
+    tmn-code: ${VNPAY_TMN_CODE:}
+    hash-secret: ${VNPAY_HASH_SECRET:}
+    pay-url: ${VNPAY_PAY_URL:}
+    return-url: ${PUBLIC_BASE_URL:}/api/v1/payments/vnpay/return
